@@ -10,4 +10,4 @@ env/prod.env
 
 # Build
 
-/build/
+/dist/
