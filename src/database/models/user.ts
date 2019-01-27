@@ -22,6 +22,11 @@ export interface UserViewModel {
   username: string;
 }
 
+export interface UserLoginModel {
+  username: string;
+  password: string;
+}
+
 export const User = sequelize.define<UserModel, UserAddModel>('user', {
   email: Sequelize.STRING,
   username: Sequelize.STRING,
