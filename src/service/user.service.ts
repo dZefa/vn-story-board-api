@@ -16,14 +16,9 @@ interface JWTpayload {
 class UserService {
   private readonly _saltRounds = Number(process.env.SALT);
   private readonly _jwtSecret = process.env.JWT_SECRET;
-  private static _user: Bluebird<UserModel | null>;
 
   public static get userAttributes(): string[] {
     return ['id', 'email', 'username'];
-  }
-
-  public static get user(): Bluebird<UserModel | null> {
-    return this._user;
   }
 
   public getUserById(id: number): Bluebird<UserViewModel> {
@@ -71,13 +66,18 @@ class UserService {
 
   public verifyToken(token: string): Promise<Boolean> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, this._jwtSecret, (err, decoded: JWTpayload) => {
+      jwt.verify(token, this._jwtSecret, async (err, decoded: JWTpayload) => {
         if (err) {
           return reject(false);
         }
 
-        UserService._user = User.findById(decoded.id);
-        resolve(true);
+        const user = await User.findById(decoded.id);
+
+        if (user) {
+          return resolve(true);
+        }
+
+        resolve(false);
       });
     });
   }
