@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Bluebird from 'bluebird';
 
-import { User, UserModel, UserAddModel, UserViewModel } from '../database/models/user';
+import { User, UserModel, UserAddModel, UserViewModel, UserLoginModel } from '../database/models/user';
 
 interface JWTSignedToken {
   token: string;
@@ -52,14 +52,14 @@ class UserService {
     });
   }
 
-  public login({ email }: UserAddModel): Promise<JWTSignedToken | string> {
+  public login({ username }: UserLoginModel): Promise<JWTSignedToken | string> {
     return new Promise((resolve, reject) => {
       User.findOne({
-        where: { email }
+        where: { username }
       })
         .then((user: UserModel) => {
-          const { id, email } = user;
-          const token = jwt.sign({ id, email }, this._jwtSecret, { expiresIn: '30 days' });
+          const { id, username } = user;
+          const token = jwt.sign({ id, username }, this._jwtSecret, { expiresIn: '30 days' });
 
           resolve({ token });
         })
