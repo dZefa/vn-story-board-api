@@ -8,6 +8,8 @@ import { loadEnv } from './util/loadEnv';
 // Load Env Variables
 loadEnv();
 
+import { router } from './routes';
+
 const app = express();
 
 app.set('PORT', process.env.PORT || 3000);
@@ -17,5 +19,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('short'));
+
+app.use('/api', router);
 
 export { app };
